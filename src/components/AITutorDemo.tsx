@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Menu, X, Settings } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -33,6 +33,7 @@ const AITutorDemo: React.FC = () => {
   
   const [input, setInput] = useState('/start');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [config, setConfig] = useState<Config>({
     style: 'Friendly',
     reasoning: 'Step-by-Step',
@@ -378,78 +379,104 @@ Would you like me to create a practice test, provide more examples, or explore a
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden" style={{ height: '600px' }}>
+    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden relative" style={{ height: '600px' }}>
       <div className="flex h-full">
+        {/* Mobile Sidebar Overlay */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* Left Sidebar - Personalization */}
-        <div className="w-48 bg-gray-50 border-r border-gray-300 p-4">
-          <h4 className="font-semibold mb-4 text-gray-900">Personalization</h4>
+        <div className={`
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0 md:relative fixed left-0 top-0 h-full
+          w-72 md:w-48 bg-gray-50 border-r border-gray-300 p-4 md:p-4 pt-6 md:pt-4
+          transition-transform duration-300 ease-in-out z-50 md:z-auto
+          overflow-y-auto
+        `}>
+          {/* Mobile Close Button */}
+          <div className="flex items-center justify-between mb-4 md:hidden">
+            <h4 className="font-semibold text-gray-900 text-lg">Personalization</h4>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Desktop Title */}
+          <h4 className="font-semibold mb-4 text-gray-900 hidden md:block">Personalization</h4>
           
-          <div className="space-y-4">
+          <div className="space-y-5 md:space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Style</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2 md:mb-1">Style</label>
               <div className="relative">
                 <select
                   value={config.style}
                   onChange={(e) => setConfig(prev => ({ ...prev, style: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded text-sm appearance-none bg-white pr-8"
+                  className="w-full p-3 md:p-2 border border-gray-300 rounded-lg md:rounded text-sm appearance-none bg-white pr-10 md:pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="Friendly">Friendly</option>
                   <option value="Professional">Professional</option>
                   <option value="Casual">Casual</option>
                   <option value="Academic">Academic</option>
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 md:right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reasoning</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2 md:mb-1">Reasoning</label>
               <div className="relative">
                 <select
                   value={config.reasoning}
                   onChange={(e) => setConfig(prev => ({ ...prev, reasoning: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded text-sm appearance-none bg-white pr-8"
+                  className="w-full p-3 md:p-2 border border-gray-300 rounded-lg md:rounded text-sm appearance-none bg-white pr-10 md:pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="Step-by-Step">Step-by-Step</option>
                   <option value="Conceptual">Conceptual</option>
                   <option value="Problem-Based">Problem-Based</option>
                   <option value="Socratic">Socratic</option>
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 md:right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Depth</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2 md:mb-1">Depth</label>
               <div className="relative">
                 <select
                   value={config.depth}
                   onChange={(e) => setConfig(prev => ({ ...prev, depth: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded text-sm appearance-none bg-white pr-8"
+                  className="w-full p-3 md:p-2 border border-gray-300 rounded-lg md:rounded text-sm appearance-none bg-white pr-10 md:pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="Elementary">Elementary</option>
                   <option value="Intermediate">Intermediate</option>
                   <option value="Advanced">Advanced</option>
                   <option value="Expert">Expert</option>
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 md:right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2 md:mb-1">Tone</label>
               <div className="relative">
                 <select
                   value={config.tone}
                   onChange={(e) => setConfig(prev => ({ ...prev, tone: e.target.value }))}
-                  className="w-full p-2 border border-gray-300 rounded text-sm appearance-none bg-white pr-8"
+                  className="w-full p-3 md:p-2 border border-gray-300 rounded-lg md:rounded text-sm appearance-none bg-white pr-10 md:pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="Encouraging">Encouraging</option>
                   <option value="Neutral">Neutral</option>
                   <option value="Challenging">Challenging</option>
                   <option value="Supportive">Supportive</option>
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 md:right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
               </div>
             </div>
           </div>
@@ -457,13 +484,27 @@ Would you like me to create a practice test, provide more examples, or explore a
 
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col bg-gray-100">
+          {/* Mobile Header */}
+          <div className="md:hidden bg-white border-b border-gray-300 p-4 flex items-center justify-between">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center space-x-2"
+            >
+              <Settings className="w-5 h-5 text-gray-600" />
+              <span className="text-sm font-medium text-gray-700">Settings</span>
+            </button>
+            <div className="text-sm text-gray-600">
+              {config.style} • {config.depth}
+            </div>
+          </div>
+
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3">
             {messages.map((message) => (
               <div key={message.id} className="flex justify-center">
-                <div className="bg-white border border-gray-300 rounded px-4 py-2 max-w-md text-center">
+                <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 md:px-4 md:py-2 max-w-xs md:max-w-md text-center shadow-sm">
                   <div 
-                    className="text-gray-800 text-sm"
+                    className="text-gray-800 text-sm leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
                   />
                 </div>
@@ -472,7 +513,7 @@ Would you like me to create a practice test, provide more examples, or explore a
             
             {isLoading && (
               <div className="flex justify-center">
-                <div className="bg-white border border-gray-300 rounded px-4 py-2 max-w-md text-center">
+                <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 md:px-4 md:py-2 max-w-xs md:max-w-md text-center shadow-sm">
                   <div className="flex items-center justify-center space-x-2 text-gray-600">
                     <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                     <span className="text-sm">AI is thinking...</span>
@@ -485,13 +526,13 @@ Would you like me to create a practice test, provide more examples, or explore a
           </div>
 
           {/* Input Area */}
-          <div className="p-4">
-            <div className="flex space-x-2">
+          <div className="p-3 md:p-4 bg-white border-t border-gray-200 md:bg-gray-100 md:border-t-0">
+            <div className="flex space-x-2 md:space-x-2">
               <div className="flex-1 relative">
                 <select
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded text-sm appearance-none bg-white pr-8"
+                  className="w-full p-3 md:p-2 border border-gray-300 rounded-lg md:rounded text-sm appearance-none bg-white pr-10 md:pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
                   <option value="/start">/start</option>
                   <option value="/plan">/plan</option>
@@ -499,12 +540,12 @@ Would you like me to create a practice test, provide more examples, or explore a
                   <option value="/config">/config</option>
                   <option value="/help">/help</option>
                 </select>
-                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 md:right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
               </div>
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+                className="px-4 md:px-4 py-3 md:py-2 bg-blue-600 text-white rounded-lg md:rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium text-sm min-w-[80px] md:min-w-[60px]"
               >
                 Send
               </button>
